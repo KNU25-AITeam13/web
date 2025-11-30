@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import Button from '@/components/Button'
-import MainLayout from '@/components/MainLayout'
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/react'
-import clsx from 'clsx'
-import Image from 'next/image'
-import { Fragment } from 'react'
-import { User, Meal, MealItem } from '@/generated/prisma/client'
-import Link from 'next/link'
-import { Session } from '@/lib/auth-client'
-import { IconChevronRight } from '@tabler/icons-react'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import Button from '@/components/Button';
+import MainLayout from '@/components/MainLayout';
+import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/react';
+import clsx from 'clsx';
+import Image from 'next/image';
+import { Fragment } from 'react';
+import { User, Meal, MealItem } from '@/generated/prisma/client';
+import Link from 'next/link';
+import { Session } from '@/lib/auth-client';
+import { IconChevronRight } from '@tabler/icons-react';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
-import 'dayjs/locale/ko'
+import 'dayjs/locale/ko';
 
-dayjs.locale('ko')
-dayjs.extend(relativeTime)
+dayjs.locale('ko');
+dayjs.extend(relativeTime);
 
 interface MyPageLayoutProps {
-  session: Session
-  user: User
-  meals: (Meal & { mealItems: MealItem[] })[]
+  session: Session;
+  user: User;
+  meals: (Meal & { mealItems: MealItem[] })[];
 }
 
 export default function MyPageLayout({
@@ -31,7 +31,7 @@ export default function MyPageLayout({
 }: MyPageLayoutProps) {
   const mealDates = [
     ...new Set(meals.map((meal) => dayjs(meal.date).format('YYYY-MM-DD'))),
-  ].sort()
+  ].sort();
 
   return (
     <MainLayout>
@@ -106,7 +106,7 @@ export default function MyPageLayout({
                       </div>
                       <IconChevronRight />
                     </Link>
-                  )
+                  );
                 })}
               </div>
             </TabPanel>
@@ -116,5 +116,5 @@ export default function MyPageLayout({
         </TabGroup>
       </div>
     </MainLayout>
-  )
+  );
 }

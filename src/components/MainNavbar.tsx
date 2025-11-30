@@ -1,34 +1,33 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { IconSearch, IconBell } from '@tabler/icons-react'
-import { usePathname, useRouter } from 'next/navigation'
-import { logo } from '@/assets'
-import clsx from 'clsx'
-import { signOut, useSession } from '@/lib/auth-client'
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import toast from 'react-hot-toast'
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { logo } from '@/assets';
+import clsx from 'clsx';
+import { signOut, useSession } from '@/lib/auth-client';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import toast from 'react-hot-toast';
 
 export default function MainNavbar() {
-  const { data: session } = useSession()
-  const router = useRouter()
+  const { data: session } = useSession();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push('/')
+          router.push('/');
           if (window.location.pathname === '/') {
-            window.location.reload()
+            window.location.reload();
           }
           toast.success('로그아웃 되었습니다.', {
             duration: 3000,
-          })
-        }
-      }
-    })
-  }
+          });
+        },
+      },
+    });
+  };
 
   return (
     <div className="fixed border-b border-black/[7%] top-0 inset-x-0 h-16 bg-white z-[999]">
@@ -41,7 +40,6 @@ export default function MainNavbar() {
           <div className="flex h-full pt-5 gap-6 px-2 text-[15px]">
             <NavLink href="/board" name="게시판" />
             <NavLink href="/upload" name="식사 분석" />
-            <NavLink href="/market" name="마켓" />
           </div>
         </div>
 
@@ -94,19 +92,19 @@ export default function MainNavbar() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 interface NavLinkProps {
-  href: string
-  name: string
-  exact?: boolean
+  href: string;
+  name: string;
+  exact?: boolean;
 }
 
 export function NavLink({ href, name, exact = false }: NavLinkProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const isActive = exact ? pathname === href : pathname.startsWith(href)
+  const isActive = exact ? pathname === href : pathname.startsWith(href);
 
   return (
     <div
@@ -125,5 +123,5 @@ export function NavLink({ href, name, exact = false }: NavLinkProps) {
         {name}
       </Link>
     </div>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-import Image from 'next/image'
-import { Meal, User } from '@/generated/prisma/client'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import 'dayjs/locale/ko'
-import Link from 'next/link'
+import Image from 'next/image';
+import { Meal, User } from '@/generated/prisma/client';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/ko';
+import Link from 'next/link';
 
-dayjs.locale('ko')
-dayjs.extend(relativeTime)
+dayjs.locale('ko');
+dayjs.extend(relativeTime);
 
 interface ArticleCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  meal: Meal
-  user: User
-  imageUrl: string
+  meal: Meal;
+  user: User;
+  imageUrl: string;
 }
 
 export default function ArticleCard({
@@ -53,5 +53,5 @@ export default function ArticleCard({
         </div>
       </div>
     </Link>
-  )
+  );
 }

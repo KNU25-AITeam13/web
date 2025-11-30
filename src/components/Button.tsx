@@ -1,28 +1,29 @@
-import clsx from 'clsx'
+import clsx from 'clsx';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outlined' | 'text'
+  variant?: 'primary' | 'secondary' | 'outlined' | 'text';
 }
 
 export default function Button({ children, className, ...props }: ButtonProps) {
-  let variantStyle
+  let variantStyle;
 
   switch (props.variant) {
     case 'primary':
-      variantStyle = 'bg-primary-600 text-white'
-      break
+      variantStyle = 'bg-primary-600 text-white';
+      break;
     case 'secondary':
-      variantStyle = 'bg-white text-black border border-black'
-      break
+      variantStyle = 'bg-white text-black border border-black';
+      break;
     case 'outlined':
-      variantStyle = 'bg-transparent text-primary-600 border border-primary-600'
-      break
+      variantStyle =
+        'bg-transparent text-primary-600 border border-primary-600';
+      break;
     case 'text':
-      variantStyle = 'bg-transparent text-primary-600'
-      break
+      variantStyle = 'bg-transparent text-primary-600';
+      break;
     default:
-      variantStyle = 'bg-primary-600 text-white'
-      break
+      variantStyle = 'bg-primary-600 text-white';
+      break;
   }
 
   return (
@@ -32,5 +33,5 @@ export default function Button({ children, className, ...props }: ButtonProps) {
     >
       {children}
     </button>
-  )
+  );
 }

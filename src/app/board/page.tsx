@@ -1,33 +1,23 @@
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-import prisma from '@/lib/prisma'
-import BoardPageLayout from './page.layout'
-import { storage } from '@/lib/firebaseClient'
-import { getDownloadURL, ref } from 'firebase/storage'
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import prisma from '@/lib/prisma';
+import BoardPageLayout from './page.layout';
+import { storage } from '@/lib/firebaseClient';
+import { getDownloadURL, ref } from 'firebase/storage';
 
 export default async function BoardPage() {
   const session = await auth.api.getSession({
-    headers: await headers()
-  })
+    headers: await headers(),
+  });
 
-  if (!session?.user) {
-    return redirect('/login')
-  }
-
+  // proxy.ts가 인증 및 가입완료를 처리하므로 여기서는 세션과 유저가 항상 존재
   const user = await prisma.user.findUnique({
-    where: {
-      email: session.user.email,
-    },
-  })
-
-  if (!user) {
-    return redirect('/login')
-  }
+    where: { id: session!.user.id },
+  });
 
   const meals = await prisma.meal.findMany({
     where: {
-      userId: user.id,
+      userId: user!.id,
       isPublic: true,
     },
     include: {
@@ -37,15 +27,15 @@ export default async function BoardPage() {
     orderBy: {
       date: 'desc',
     },
-  })
+  });
 
-  const imageUrls: Record<string, string> = {}
+  const imageUrls: Record<string, string> = {};
 
   for (const meal of meals) {
-    const mealImageRef = ref(storage, `images/${meal.mealItems[0].imageName}`)
-    const mealImageUrl = await getDownloadURL(mealImageRef)
-    imageUrls[meal.mealId] = mealImageUrl
+    const mealImageRef = ref(storage, `images/${meal.mealItems[0].imageName}`);
+    const mealImageUrl = await getDownloadURL(mealImageRef);
+    imageUrls[meal.mealId] = mealImageUrl;
   }
 
-  return <BoardPageLayout meals={meals} imageUrls={imageUrls} />
+  return <BoardPageLayout meals={meals} imageUrls={imageUrls} />;
 }

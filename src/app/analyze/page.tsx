@@ -1,48 +1,40 @@
-import UserGuard from '@/components/common/UserGuard'
-import AnalyzePageLayout from './page.layout'
+import AnalyzePageLayout from './page.layout';
 
-import prisma from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
+import prisma from '@/lib/prisma';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export default async function AnalyzePage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const session = await auth.api.getSession({
-    headers: await headers()
-  })
+    headers: await headers(),
+  });
 
-  if (!session?.user) {
-    return <div>로그인이 필요합니다.</div>
-  }
-
+  // proxy.ts가 인증 및 가입완료를 처리하므로 여기서는 세션과 유저가 항상 존재
   const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  })
+    where: { id: session!.user.id },
+  });
 
-  if (!user) {
-    return <div>사용자를 찾을 수 없습니다.</div>
-  }
-
-  const { mealId } = searchParams
+  const { mealId } = searchParams;
 
   if (!mealId) {
-    return <div>mealId가 필요합니다.</div>
+    return <div>mealId가 필요합니다.</div>;
   }
 
   const meal = await prisma.meal.findUnique({
-    where: { mealId: mealId as string, userId: user.id },
-  })
+    where: { mealId: mealId as string, userId: user!.id },
+  });
 
   if (!meal) {
-    return <div>meal을 찾을 수 없습니다.</div>
+    return <div>meal을 찾을 수 없습니다.</div>;
   }
 
   const mealItems = await prisma.mealItem.findMany({
     where: { mealId: mealId as string },
-  })
+  });
 
   return (
     <AnalyzePageLayout
@@ -50,5 +42,5 @@ export default async function AnalyzePage({
       meal={meal}
       mealItems={mealItems}
     />
-  )
+  );
 }

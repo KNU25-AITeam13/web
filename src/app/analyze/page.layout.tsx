@@ -1,22 +1,22 @@
-'use client'
+'use client';
 
-import MainLayout from '@/components/MainLayout'
-import { Meal, MealItem } from '@/generated/prisma/client'
-import { IconFileAnalytics, IconUpload } from '@tabler/icons-react'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+import MainLayout from '@/components/MainLayout';
+import { Meal, MealItem } from '@/generated/prisma/client';
+import { IconFileAnalytics, IconUpload } from '@tabler/icons-react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
-import dayjs from 'dayjs'
-import 'dayjs/locale/ko'
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
-dayjs.locale('ko')
+dayjs.locale('ko');
 
 interface AnalyzePageLayoutProps {
-  mealId: string
-  meal: Meal
-  mealItems: MealItem[]
+  mealId: string;
+  meal: Meal;
+  mealItems: MealItem[];
 }
 
 export default function AnalyzePageLayout({
@@ -24,34 +24,34 @@ export default function AnalyzePageLayout({
   meal,
   mealItems,
 }: AnalyzePageLayoutProps) {
-  const router = useRouter()
-  const [successCount, setSuccessCount] = useState(0)
+  const router = useRouter();
+  const [successCount, setSuccessCount] = useState(0);
 
-  const totalCount = mealItems.length
+  const totalCount = mealItems.length;
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       for (let mealItem of mealItems) {
         try {
-          await axios.post(`/api/analyze?mealItemId=${mealItem.mealItemId}`)
+          await axios.post(`/api/analyze?mealItemId=${mealItem.mealItemId}`);
         } catch (error) {
-          console.error(error)
+          console.error(error);
         } finally {
-          setSuccessCount((count) => count + 1)
+          setSuccessCount((count) => count + 1);
         }
       }
 
-      toast.success('분석이 완료되었습니다!')
+      toast.success('분석이 완료되었습니다!');
       setTimeout(
         () => router.push(`/meals/${dayjs(meal.date).format('YYYY-MM-DD')}`),
         2000
-      )
-    })()
-  }, [mealItems])
+      );
+    })();
+  }, [mealItems]);
 
-  console.log(mealItems)
-  const progress = (successCount / totalCount) * 100
-  console.log(progress)
+  console.log(mealItems);
+  const progress = (successCount / totalCount) * 100;
+  console.log(progress);
 
   return (
     <MainLayout>
@@ -80,5 +80,5 @@ export default function AnalyzePageLayout({
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }

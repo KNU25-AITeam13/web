@@ -1,12 +1,12 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  productImage: string
-  productId: number
-  productName: string
-  productPrice: number
-  productDetail: string
+  productImage: string;
+  productId: number;
+  productName: string;
+  productPrice: number;
+  productDetail: string;
 }
 
 export default function ProductCard({
@@ -36,5 +36,5 @@ export default function ProductCard({
         <b>{productPrice.toLocaleString('ko-KR')}</b>원
       </div>
     </div>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import Footer from './Footer'
-import MainNavbar from './MainNavbar'
+import Footer from './Footer';
+import MainNavbar from './MainNavbar';
 
 interface LayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default function MainLayout({ children }: LayoutProps) {
@@ -18,5 +18,5 @@ export default function MainLayout({ children }: LayoutProps) {
 
       <Footer />
     </>
-  )
+  );
 }

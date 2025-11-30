@@ -1,8 +1,6 @@
 const links = {
-  github: 'https://github.com/LikeLion-KNU04',
-  frontend: 'https://github.com/LikeLion-KNU04/mealog-frontend',
-  backend: 'https://github.com/LikeLion-KNU04/mealog-backend',
-  ai: 'https://github.com/LikeLion-KNU04/mealog-ai',
-}
+  github: 'https://github.com/KNU25-AITeam13',
+  web: 'https://github.com/KNU25-AITeam13/web',
+};
 
-export default links
+export default links;

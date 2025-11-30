@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { introImg, logoPrimary } from '@/assets'
-import Button from '@/components/Button'
-import MainLayout from '@/components/MainLayout'
-import Image from 'next/image'
-import Link from 'next/link'
+import { introImg, logoPrimary } from '@/assets';
+import Button from '@/components/Button';
+import MainLayout from '@/components/MainLayout';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export function IntroPage() {
   return (
@@ -38,5 +38,5 @@ export function IntroPage() {
 
       <div className="container mx-auto px-36"></div>
     </MainLayout>
-  )
+  );
 }

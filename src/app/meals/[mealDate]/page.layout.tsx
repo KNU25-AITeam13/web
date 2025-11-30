@@ -1,29 +1,34 @@
-'use client'
+'use client';
 
-import MainLayout from '@/components/MainLayout'
+import MainLayout from '@/components/MainLayout';
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-} from '@headlessui/react'
-import { Meal, MealItem, MealItemAnalysis, User } from '@/generated/prisma/client'
-import { IconChevronDown } from '@tabler/icons-react'
-import clsx from 'clsx'
-import dayjs from 'dayjs'
-import Image from 'next/image'
-import 'dayjs/locale/ko'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import Button from '@/components/Button'
-dayjs.locale('ko')
+} from '@headlessui/react';
+import {
+  Meal,
+  MealItem,
+  MealItemAnalysis,
+  User,
+} from '@/generated/prisma/client';
+import { IconChevronDown } from '@tabler/icons-react';
+import clsx from 'clsx';
+import dayjs from 'dayjs';
+import Image from 'next/image';
+import 'dayjs/locale/ko';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Button from '@/components/Button';
+dayjs.locale('ko');
 
 interface MealPageLayoutProps {
-  user: User
-  mealDate: string
+  user: User;
+  mealDate: string;
   meals: (Meal & {
-    mealItems: (MealItem & { mealItemAnalysis: MealItemAnalysis | null })[]
-  })[]
-  imageUrls: Record<string, string[]>
+    mealItems: (MealItem & { mealItemAnalysis: MealItemAnalysis | null })[];
+  })[];
+  imageUrls: Record<string, string[]>;
 }
 
 export default function MealPageLayout({
@@ -32,16 +37,16 @@ export default function MealPageLayout({
   meals,
   imageUrls,
 }: MealPageLayoutProps) {
-  let typeStr = ''
+  let typeStr = '';
 
-  const [totalScore, setTotalScore] = useState(0)
-  const [scoreLoaded, setScoreLoaded] = useState(false)
+  const [totalScore, setTotalScore] = useState(0);
+  const [scoreLoaded, setScoreLoaded] = useState(false);
 
   const handlePublish = (mealId: string) => {
     axios.post('/api/articles', {
       mealId,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     const nutrientData = {
@@ -59,14 +64,14 @@ export default function MealPageLayout({
       zinc: 0,
       cholesterol: 0,
       transfat: 0,
-    }
+    };
 
     for (let meal of meals) {
       for (let mealItem of meal.mealItems) {
         for (let k of Object.keys(nutrientData) as Array<
           keyof typeof nutrientData
         >) {
-          nutrientData[k] += mealItem.mealItemAnalysis?.[k] ?? 0
+          nutrientData[k] += mealItem.mealItemAnalysis?.[k] ?? 0;
         }
       }
     }
@@ -76,26 +81,27 @@ export default function MealPageLayout({
         user_info: {
           gender: user.gender === 'male' ? 1 : 0,
           age:
-            new Date().getFullYear() - new Date(user.birthDate).getFullYear(),
-          height: user.height,
-          weight: user.weight,
+            new Date().getFullYear() -
+            new Date(user.birthDate!).getFullYear(),
+          height: user.height!,
+          weight: user.weight!,
           activity: 2,
         },
         daily_nutrient: nutrientData,
       })
       .then((r) => {
-        setTotalScore(80)
-      })
-  }, [])
+        setTotalScore(80);
+      });
+  }, []);
 
-  let barColor = ''
+  let barColor = '';
 
   if (totalScore < 50) {
-    barColor = 'bg-red-600'
+    barColor = 'bg-red-600';
   } else if (totalScore < 80) {
-    barColor = 'bg-amber-600'
+    barColor = 'bg-amber-600';
   } else {
-    barColor = 'bg-primary-600'
+    barColor = 'bg-primary-600';
   }
 
   return (
@@ -132,17 +138,17 @@ export default function MealPageLayout({
               {meals.map((meal) => {
                 switch (meal.type) {
                   case 'breakfast':
-                    typeStr = '아침'
-                    break
+                    typeStr = '아침';
+                    break;
                   case 'lunch':
-                    typeStr = '점심'
-                    break
+                    typeStr = '점심';
+                    break;
                   case 'dinner':
-                    typeStr = '저녁'
-                    break
+                    typeStr = '저녁';
+                    break;
                 }
 
-                const { mealItems } = meal
+                const { mealItems } = meal;
                 return (
                   <Disclosure
                     as="div"
@@ -182,7 +188,7 @@ export default function MealPageLayout({
 
                           <div className="flex flex-col gap-6 px-4">
                             {mealItems.map((mealItem, index) => {
-                              let { mealItemAnalysis } = mealItem
+                              let { mealItemAnalysis } = mealItem;
 
                               return (
                                 <div
@@ -365,7 +371,7 @@ export default function MealPageLayout({
                                     </div>
                                   )}
                                 </div>
-                              )
+                              );
                             })}
                           </div>
 
@@ -378,7 +384,7 @@ export default function MealPageLayout({
                                     '이 식사를 게시할까요? 모든 사용자가 볼 수 있습니다.'
                                   )
                                 ) {
-                                  handlePublish(meal.mealId)
+                                  handlePublish(meal.mealId);
                                 }
                               }}
                             >
@@ -389,12 +395,12 @@ export default function MealPageLayout({
                       </>
                     )}
                   </Disclosure>
-                )
+                );
               })}
             </div>
           </div>
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }

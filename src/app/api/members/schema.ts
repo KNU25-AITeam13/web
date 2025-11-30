@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const memberPostSchema = z.object({
   name: z.string(),
@@ -6,4 +6,4 @@ export const memberPostSchema = z.object({
   birthDate: z.string(),
   height: z.number(),
   weight: z.number(),
-})
+});

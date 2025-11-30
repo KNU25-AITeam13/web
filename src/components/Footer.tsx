@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { logoWhite } from '@/assets'
-import links from '@/constants/links'
-import { IconMail, IconPhone } from '@tabler/icons-react'
-import Image from 'next/image'
-import Link from 'next/link'
+import { logoWhite } from '@/assets';
+import links from '@/constants/links';
+import { IconMail, IconPhone } from '@tabler/icons-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -15,28 +15,12 @@ export default function Footer() {
             <Image src={logoWhite} alt="logo" height={52} />
           </div>
           <div className="text-sm font-light flex gap-2 pb-4">
-            <span>멋쟁이사자처럼 대학 12기 중앙해커톤</span>
+            <span>2025-2 Artificial Intelligence</span>
             <span className="text-white/50">|</span>
-            <span>경북대학교 4팀 크누라이온즈</span>
+            <span>Team 13</span>
           </div>
 
-          <div className="pb-4 flex flex-col gap-1 text-sm">
-            <div className="flex gap-2 items-center">
-              <IconMail size={20} strokeWidth={1.25} />
-              <a
-                href="mailto:support@mercuryapp.com"
-                className="hover:underline"
-              >
-                me@arpaap.dev
-              </a>
-            </div>
-            <div className="flex gap-2 items-center">
-              <IconPhone size={20} strokeWidth={1.25} />
-              <a href="tel:053-000-0000" className="hover:underline">
-                053-000-0000
-              </a>
-            </div>
-          </div>
+          <div className="pb-4 flex flex-col gap-1 text-sm"></div>
 
           <div className="text-sm font-light">
             © {new Date().getFullYear()} Mealog All rights reserved.
@@ -59,18 +43,12 @@ export default function Footer() {
             <a href={links.github} className="text-sm font-light pb-1">
               팀 GitHub
             </a>
-            <a href={links.frontend} className="text-sm font-light pb-1">
-              프론트엔드 리포지토리
-            </a>
-            <a href={links.backend} className="text-sm font-light pb-1">
-              백엔드 리포지토리
-            </a>
-            <a href={links.ai} className="text-sm font-light pb-1">
-              AI 리포지토리
+            <a href={links.web} className="text-sm font-light pb-1">
+              웹 리포지토리
             </a>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }

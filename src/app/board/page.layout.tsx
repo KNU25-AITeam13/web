@@ -1,10 +1,10 @@
-import ArticleCard from '@/components/ArticleCard'
-import MainLayout from '@/components/MainLayout'
-import { Meal, MealItem, User } from '@/generated/prisma/client'
+import ArticleCard from '@/components/ArticleCard';
+import MainLayout from '@/components/MainLayout';
+import { Meal, MealItem, User } from '@/generated/prisma/client';
 
 interface BoardPageLayoutProps {
-  meals: (Meal & { mealItems: MealItem[]; user: User })[]
-  imageUrls: Record<string, string>
+  meals: (Meal & { mealItems: MealItem[]; user: User })[];
+  imageUrls: Record<string, string>;
 }
 
 export default function BoardPageLayout({
@@ -30,5 +30,5 @@ export default function BoardPageLayout({
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }

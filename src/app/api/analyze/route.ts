@@ -1,36 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
-import { storage } from '@/lib/firebaseClient'
-import { getBytes, ref } from 'firebase/storage'
-import axios, { AxiosError } from 'axios'
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { storage } from '@/lib/firebaseClient';
+import { getBytes, ref } from 'firebase/storage';
+import axios, { AxiosError } from 'axios';
 
 export async function POST(request: NextRequest) {
-  const { searchParams } = request.nextUrl
-  const mealItemId = searchParams.get('mealItemId')
+  const { searchParams } = request.nextUrl;
+  const mealItemId = searchParams.get('mealItemId');
 
   if (!mealItemId) {
     return NextResponse.json(
       { error: 'mealItemId is required' },
       { status: 400 }
-    )
+    );
   }
 
   const session = await auth.api.getSession({
-    headers: await headers()
-  })
+    headers: await headers(),
+  });
 
   if (!session?.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-  })
+  });
 
   if (!user) {
-    return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
   const mealItem = await prisma.mealItem.findUnique({
@@ -43,52 +43,55 @@ export async function POST(request: NextRequest) {
     include: {
       mealItemAnalysis: true,
     },
-  })
+  });
 
   if (!mealItem) {
-    return NextResponse.json({ error: 'mealItem not found' }, { status: 404 })
+    return NextResponse.json({ error: 'mealItem not found' }, { status: 404 });
   }
 
   if (mealItem.mealItemAnalysis) {
     return NextResponse.json(
       { error: 'mealItemAnalysis already exists' },
       { status: 400 }
-    )
+    );
   }
 
-  const reference = ref(storage, `images/${mealItem.imageName}`)
-  const bytes = await getBytes(reference)
+  const reference = ref(storage, `images/${mealItem.imageName}`);
+  const bytes = await getBytes(reference);
 
-  const file = new File([bytes], mealItem.imageName)
+  const file = new File([bytes], mealItem.imageName);
 
-  const formData = new FormData()
-  formData.append('file', file)
+  const formData = new FormData();
+  formData.append('file', file);
 
-  let r
+  let r;
   try {
     r = await axios.post(`${process.env.AI_API_URL}/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    })
+    });
   } catch (_e) {
-    const e = _e as AxiosError
+    const e = _e as AxiosError;
 
     return NextResponse.json(
       { message: 'Failed to analyze', error: e.response?.data },
       { status: 500 }
-    )
+    );
   }
 
   const analysisData =
     typeof r.data === 'string'
       ? JSON.parse(r.data.replace(/NaN/g, '0.0'))
-      : r.data
+      : r.data;
 
-  const analysisResult = analysisData.result.result[0]
+  const analysisResult = analysisData.result.result[0];
 
   if (!analysisResult) {
-    return NextResponse.json({ message: 'No analysis result' }, { status: 400 })
+    return NextResponse.json(
+      { message: 'No analysis result' },
+      { status: 400 }
+    );
   }
 
   const nutrientData = {
@@ -106,7 +109,7 @@ export async function POST(request: NextRequest) {
     zinc: analysisResult.nut.food_zinc,
     cholesterol: analysisResult.nut.food_cholesterol,
     transfat: analysisResult.nut.food_transfat,
-  }
+  };
 
   // try {
   //   var r = await axios.post(
@@ -183,7 +186,7 @@ export async function POST(request: NextRequest) {
       // zincPenalty: scoreData.detail.penalty.detail.zinc_penalty,
       // cholesterolPenalty: scoreData.detail.penalty.detail.cholesterol_penalty,
     },
-  })
+  });
 
-  return NextResponse.json({ message: 'OK', data: mealItemAnalysis })
+  return NextResponse.json({ message: 'OK', data: mealItemAnalysis });
 }

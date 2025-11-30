@@ -1,9 +1,9 @@
-import Image from 'next/image'
+import Image from 'next/image';
 
 interface CommentProps extends React.HTMLAttributes<HTMLDivElement> {
-  username: string
-  profileImage: string
-  content: string
+  username: string;
+  profileImage: string;
+  content: string;
 }
 
 export default function Comment({
@@ -29,5 +29,5 @@ export default function Comment({
         <div className="text-base">{content}</div>
       </div>
     </div>
-  )
+  );
 }

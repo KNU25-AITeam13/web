@@ -1,45 +1,45 @@
-'use client'
+'use client';
 
-import { IconX } from '@tabler/icons-react'
-import { useState } from 'react'
-import { RegisterForm1, RegisterForm2 } from './page.component'
-import { AnimatePresence, motion } from 'framer-motion'
-import Link from 'next/link'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import axios from 'axios'
-import { redirect, useRouter } from 'next/navigation'
-import toast from 'react-hot-toast'
+import { IconX } from '@tabler/icons-react';
+import { useState } from 'react';
+import { RegisterForm1, RegisterForm2 } from './page.component';
+import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import axios from 'axios';
+import { redirect, useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export interface RegisterFormState {
-  name: string
-  gender: string
-  birthDate: Date
-  height: number
-  weight: number
+  name: string;
+  gender: string;
+  birthDate: Date;
+  height: number;
+  weight: number;
 }
 
-const MAX_STEP = 2
+const MAX_STEP = 2;
 
 export default function RegisterFormLayout() {
-  const [step, setStep] = useState(1)
-  const router = useRouter()
+  const [step, setStep] = useState(1);
+  const router = useRouter();
 
-  const methods = useForm<RegisterFormState>({})
+  const methods = useForm<RegisterFormState>({});
 
-  const { handleSubmit } = methods
+  const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<RegisterFormState> = (data) => {
     if (step === MAX_STEP) {
       axios.post('/api/members', data).then((res) => {
         toast.success('성공적으로 회원가입 처리되었습니다!', {
           duration: 3000,
-        })
+        });
         setTimeout(() => {
-          window.location.assign('/')
-        }, 1000)
-      })
+          window.location.assign('/');
+        }, 1000);
+      });
     }
-  }
+  };
 
   return (
     <div className="h-screen">
@@ -83,7 +83,7 @@ export default function RegisterFormLayout() {
                       <Children />
                     </motion.div>
                   )
-                )
+                );
               })}
             </AnimatePresence>
 
@@ -120,5 +120,5 @@ export default function RegisterFormLayout() {
         </FormProvider>
       </div>
     </div>
-  )
+  );
 }

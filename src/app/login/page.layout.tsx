@@ -1,22 +1,22 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
+import Image from 'next/image';
 import {
   appleLogoWhite,
   googleLogo,
   kakaoLogo,
   logo,
   naverLogoWhite,
-} from '@/assets'
-import { signIn } from '@/lib/auth-client'
+} from '@/assets';
+import { signIn } from '@/lib/auth-client';
 
 export default function LoginPageLayout() {
   const handleGoogleSignIn = async () => {
     await signIn.social({
       provider: 'google',
-      callbackURL: '/'
-    })
-  }
+      callbackURL: '/',
+    });
+  };
 
   return (
     <>
@@ -51,5 +51,5 @@ export default function LoginPageLayout() {
         </div>
       </div>
     </>
-  )
+  );
 }

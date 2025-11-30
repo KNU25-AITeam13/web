@@ -1,32 +1,32 @@
-import { auth } from '@/lib/auth'
-import { headers } from 'next/headers'
-import { notFound, redirect } from 'next/navigation'
-import BoardDetailPageLayout from './page.layout'
-import prisma from '@/lib/prisma'
-import { storage } from '@/lib/firebaseClient'
-import { getDownloadURL, ref } from 'firebase/storage'
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { notFound, redirect } from 'next/navigation';
+import BoardDetailPageLayout from './page.layout';
+import prisma from '@/lib/prisma';
+import { storage } from '@/lib/firebaseClient';
+import { getDownloadURL, ref } from 'firebase/storage';
 
 export default async function BoardDetailPage({
   params,
 }: {
-  params: { boardId: string }
+  params: { boardId: string };
 }) {
   const session = await auth.api.getSession({
-    headers: await headers()
-  })
+    headers: await headers(),
+  });
 
   if (!session?.user) {
-    return redirect('/login')
+    return redirect('/login');
   }
 
   const user = await prisma.user.findUnique({
     where: {
       email: session.user.email,
     },
-  })
+  });
 
   if (!user) {
-    return redirect('/login')
+    return redirect('/login');
   }
 
   const meal = await prisma.meal.findUnique({
@@ -41,18 +41,20 @@ export default async function BoardDetailPage({
         },
       },
     },
-  })
+  });
 
   if (!meal) {
-    return notFound()
+    return notFound();
   }
 
   const imageUrls = await Promise.all(
     meal.mealItems.map((mealItem) => {
-      const mealImageRef = ref(storage, `images/${mealItem.imageName}`)
-      return getDownloadURL(mealImageRef)
+      const mealImageRef = ref(storage, `images/${mealItem.imageName}`);
+      return getDownloadURL(mealImageRef);
     })
-  )
+  );
 
-  return <BoardDetailPageLayout user={user} meal={meal} imageUrls={imageUrls} />
+  return (
+    <BoardDetailPageLayout user={user} meal={meal} imageUrls={imageUrls} />
+  );
 }

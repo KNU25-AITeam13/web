@@ -1,109 +1,109 @@
-'use client'
+'use client';
 
-import Button from '@/components/Button'
-import MainLayout from '@/components/MainLayout'
-import { Radio, RadioGroup } from '@headlessui/react'
-import { Meal } from '@/generated/prisma/client'
+import Button from '@/components/Button';
+import MainLayout from '@/components/MainLayout';
+import { Radio, RadioGroup } from '@headlessui/react';
+import { Meal } from '@/generated/prisma/client';
 import {
   IconArrowRight,
   IconCircle,
   IconCircleCheck,
   IconUpload,
   IconX,
-} from '@tabler/icons-react'
-import axios from 'axios'
-import clsx from 'clsx'
-import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+} from '@tabler/icons-react';
+import axios from 'axios';
+import clsx from 'clsx';
+import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 interface UploadFormState {
-  date: Date
-  type: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'etc'
-  images: File[]
+  date: Date;
+  type: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'etc';
+  images: File[];
 }
 
 export default function UploadPage() {
-  const router = useRouter()
-  const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { register, watch, control, setValue, handleSubmit } =
     useForm<UploadFormState>({
       defaultValues: {
         images: [],
       },
-    })
+    });
 
-  const [dragOver, setDragOver] = useState<boolean>(false)
-  const [isUploading, setIsUploading] = useState<boolean>(false)
+  const [dragOver, setDragOver] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const { images } = watch()
+  const { images } = watch();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
+    const files = e.target.files;
 
     if (files) {
-      setValue('images', [...images, ...Array.from(files)])
+      setValue('images', [...images, ...Array.from(files)]);
     }
-  }
+  };
 
   const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragOver(true)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(true);
+  };
 
   const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragOver(false)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragOver(false)
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
 
-    if (isUploading) return
+    if (isUploading) return;
 
     if (e.dataTransfer) {
-      const file = e.dataTransfer.files[0]
+      const file = e.dataTransfer.files[0];
 
       if (file) {
-        const fileName = file.name
-        const fileNameSplit = fileName.split('.')
-        const fileExtension = fileNameSplit[fileNameSplit.length - 1]
+        const fileName = file.name;
+        const fileNameSplit = fileName.split('.');
+        const fileExtension = fileNameSplit[fileNameSplit.length - 1];
         if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-          setValue('images', [...images, file])
+          setValue('images', [...images, file]);
         } else {
-          toast.error('이미지 파일만 업로드 가능합니다.')
+          toast.error('이미지 파일만 업로드 가능합니다.');
         }
       }
     }
-  }
+  };
 
   const onSubmit: SubmitHandler<UploadFormState> = (data) => {
     if (data.images.length === 0) {
-      toast.error('이미지를 업로드해주세요.')
-      return
+      toast.error('이미지를 업로드해주세요.');
+      return;
     }
 
-    const formData = new FormData()
+    const formData = new FormData();
 
-    formData.append('date', data.date.toISOString())
-    formData.append('type', data.type)
+    formData.append('date', data.date.toISOString());
+    formData.append('type', data.type);
     data.images.forEach((image) => {
-      formData.append('images', image)
-    })
+      formData.append('images', image);
+    });
 
-    toast('사진을 업로드하고 있습니다...')
-    setIsUploading(true)
+    toast('사진을 업로드하고 있습니다...');
+    setIsUploading(true);
 
     axios
       .post('/api/upload', formData, {
@@ -113,18 +113,18 @@ export default function UploadPage() {
       })
       .then((res) => {
         if (res.status === 200) {
-          toast.success('사진 업로드를 완료했습니다. 분석을 시작합니다.')
+          toast.success('사진 업로드를 완료했습니다. 분석을 시작합니다.');
 
-          let meal = res.data.data as Meal
-          router.push(`/analyze?mealId=${meal.mealId}`)
+          let meal = res.data.data as Meal;
+          router.push(`/analyze?mealId=${meal.mealId}`);
         } else {
-          toast.error('사진 업로드에 실패했습니다.')
+          toast.error('사진 업로드에 실패했습니다.');
         }
       })
       .finally(() => {
-        setIsUploading(false)
-      })
-  }
+        setIsUploading(false);
+      });
+  };
 
   return (
     <MainLayout>
@@ -209,8 +209,8 @@ export default function UploadPage() {
                   'border border-primary-500 bg-primary-200 transition-colors duration-200'
               )}
               onClick={() => {
-                if (isUploading) return
-                inputRef.current?.click()
+                if (isUploading) return;
+                inputRef.current?.click();
               }}
               onDragEnter={handleDragEnter}
               onDragLeave={handleDragLeave}
@@ -241,11 +241,11 @@ export default function UploadPage() {
                   type="button"
                   className="absolute top-2 right-2"
                   onClick={() => {
-                    if (isUploading) return
+                    if (isUploading) return;
                     setValue(
                       'images',
                       images.filter((_, i) => i !== index)
-                    )
+                    );
                   }}
                 >
                   <IconX size={24} />
@@ -276,5 +276,5 @@ export default function UploadPage() {
         />
       </form>
     </MainLayout>
-  )
+  );
 }

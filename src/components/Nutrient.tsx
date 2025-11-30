@@ -3,13 +3,13 @@ import {
   IconDroplet,
   IconLollipop,
   IconMeat,
-} from '@tabler/icons-react'
+} from '@tabler/icons-react';
 
 interface NutrientProps extends React.HTMLAttributes<HTMLDivElement> {
-  carbs: number
-  protein: number
-  fat: number
-  sugars: number
+  carbs: number;
+  protein: number;
+  fat: number;
+  sugars: number;
 }
 
 export default function Nutrient({
@@ -19,7 +19,7 @@ export default function Nutrient({
   sugars,
   ...props
 }: NutrientProps) {
-  const totalNutrient = carbs + protein + fat
+  const totalNutrient = carbs + protein + fat;
   return (
     <div {...props} className="w-full">
       <div className="flex flex-row gap-2">
@@ -73,5 +73,5 @@ export default function Nutrient({
         </div>
       </div>
     </div>
-  )
+  );
 }

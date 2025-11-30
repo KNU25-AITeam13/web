@@ -1,32 +1,37 @@
-'use client'
+'use client';
 
-import Comment from '@/components/Comment'
-import MainLayout from '@/components/MainLayout'
-import Nutrient from '@/components/Nutrient'
-import { Meal, MealItem, MealItemAnalysis, User } from '@/generated/prisma/client'
+import Comment from '@/components/Comment';
+import MainLayout from '@/components/MainLayout';
+import Nutrient from '@/components/Nutrient';
+import {
+  Meal,
+  MealItem,
+  MealItemAnalysis,
+  User,
+} from '@/generated/prisma/client';
 import {
   IconBookmark,
   IconChevronLeft,
   IconChevronRight,
   IconHeart,
   IconShare,
-} from '@tabler/icons-react'
-import Image from 'next/image'
-import { useState } from 'react'
+} from '@tabler/icons-react';
+import Image from 'next/image';
+import { useState } from 'react';
 
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import 'dayjs/locale/ko'
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/ko';
 
-dayjs.locale('ko')
-dayjs.extend(relativeTime)
+dayjs.locale('ko');
+dayjs.extend(relativeTime);
 
 interface BoardDetailPageProps {
-  user: User
+  user: User;
   meal: Meal & {
-    mealItems: (MealItem & { mealItemAnalysis: MealItemAnalysis | null })[]
-  }
-  imageUrls: string[]
+    mealItems: (MealItem & { mealItemAnalysis: MealItemAnalysis | null })[];
+  };
+  imageUrls: string[];
 }
 
 export default function BoardDetailPageLayout({
@@ -34,31 +39,31 @@ export default function BoardDetailPageLayout({
   meal,
   imageUrls,
 }: BoardDetailPageProps) {
-  const imageLength = 5
-  const [index, setIndex] = useState(0)
+  const imageLength = 5;
+  const [index, setIndex] = useState(0);
   const moveIndex = (offset: number) => {
     if (0 <= index + offset && index + offset < imageLength)
-      setIndex(index + offset)
-    else if (0 > index + offset) setIndex(0)
-    else setIndex(imageLength - 1)
-  }
+      setIndex(index + offset);
+    else if (0 > index + offset) setIndex(0);
+    else setIndex(imageLength - 1);
+  };
 
   const totalCarboHydrates = meal.mealItems.reduce(
     (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.carbohydrate ?? 0),
     0
-  )
+  );
   const totalProtein = meal.mealItems.reduce(
     (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.protein ?? 0),
     0
-  )
+  );
   const totalFat = meal.mealItems.reduce(
     (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.fat ?? 0),
     0
-  )
+  );
   const totalSugar = meal.mealItems.reduce(
     (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.sugar ?? 0),
     0
-  )
+  );
 
   return (
     <MainLayout>
@@ -67,7 +72,7 @@ export default function BoardDetailPageLayout({
           <button
             type="button"
             onClick={() => {
-              moveIndex(-1)
+              moveIndex(-1);
             }}
           >
             <IconChevronLeft />
@@ -95,7 +100,7 @@ export default function BoardDetailPageLayout({
           <button
             type="button"
             onClick={() => {
-              moveIndex(1)
+              moveIndex(1);
             }}
           >
             <IconChevronRight />
@@ -160,5 +165,5 @@ export default function BoardDetailPageLayout({
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }

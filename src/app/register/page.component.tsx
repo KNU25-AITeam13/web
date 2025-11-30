@@ -1,12 +1,12 @@
-import { Select } from '@headlessui/react'
-import { useFormContext } from 'react-hook-form'
-import { RegisterFormState } from './page.layout'
-import { useSession } from '@/lib/auth-client'
+import { Select } from '@headlessui/react';
+import { useFormContext } from 'react-hook-form';
+import { RegisterFormState } from './page.layout';
+import { useSession } from '@/lib/auth-client';
 
 export function RegisterForm1() {
-  const { register } = useFormContext<RegisterFormState>()
+  const { register } = useFormContext<RegisterFormState>();
 
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   return (
     <>
       <div className="pb-4">
@@ -68,13 +68,13 @@ export function RegisterForm1() {
         />
       </div>
     </>
-  )
+  );
 }
 
 export function RegisterForm2() {
-  const { register, watch } = useFormContext<RegisterFormState>()
+  const { register, watch } = useFormContext<RegisterFormState>();
 
-  const { name } = watch()
+  const { name } = watch();
 
   return (
     <>
@@ -113,5 +113,5 @@ export function RegisterForm2() {
         />
       </div>
     </>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import { bannerImg, logoWhite } from '@/assets'
-import MainLayout from '@/components/MainLayout'
+import { bannerImg, logoWhite } from '@/assets';
+import MainLayout from '@/components/MainLayout';
 import {
   IconArrowRight,
   IconCell,
   IconMilk,
   IconPizza,
   IconPlant,
-} from '@tabler/icons-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Line } from 'react-chartjs-2'
+} from '@tabler/icons-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Line } from 'react-chartjs-2';
 import {
   Chart,
   CategoryScale,
@@ -21,10 +21,15 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js'
-import { User, Meal, MealItem, MealItemAnalysis } from '@/generated/prisma/client'
-import { auth } from '@/lib/auth'
-import clsx from 'clsx'
+} from 'chart.js';
+import {
+  User,
+  Meal,
+  MealItem,
+  MealItemAnalysis,
+} from '@/generated/prisma/client';
+import { auth } from '@/lib/auth';
+import clsx from 'clsx';
 
 Chart.register(
   CategoryScale,
@@ -34,16 +39,16 @@ Chart.register(
   Title,
   Tooltip,
   Legend
-)
+);
 
-type Session = Awaited<ReturnType<typeof auth.api.getSession>>
+type Session = Awaited<ReturnType<typeof auth.api.getSession>>;
 
 interface DashboardPageProps {
-  session: Session
-  user: User
+  session: Session;
+  user: User;
   meals: (Meal & {
-    mealItems: (MealItem & { mealItemAnalysis: MealItemAnalysis | null })[]
-  })[]
+    mealItems: (MealItem & { mealItemAnalysis: MealItemAnalysis | null })[];
+  })[];
 }
 
 export default function DashboardPage({
@@ -53,77 +58,77 @@ export default function DashboardPage({
 }: DashboardPageProps) {
   const uploadedToday = meals.filter(
     (meal) => meal.date.toDateString() === new Date().toDateString()
-  )
+  );
 
   const mealsWeek = meals.filter(
     (meal) =>
       meal.date >= new Date(new Date().setDate(new Date().getDate() - 7))
-  )
+  );
 
-  let totalCarbohydrate = 0
-  let totalProtein = 0
-  let totalFat = 0
-  let totalSugar = 0
+  let totalCarbohydrate = 0;
+  let totalProtein = 0;
+  let totalFat = 0;
+  let totalSugar = 0;
 
   mealsWeek.forEach((meal) => {
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        totalCarbohydrate += mealItem.mealItemAnalysis.carbohydrate
-        totalProtein += mealItem.mealItemAnalysis.protein
-        totalFat += mealItem.mealItemAnalysis.fat
-        totalSugar += mealItem.mealItemAnalysis.sugar
+        totalCarbohydrate += mealItem.mealItemAnalysis.carbohydrate;
+        totalProtein += mealItem.mealItemAnalysis.protein;
+        totalFat += mealItem.mealItemAnalysis.fat;
+        totalSugar += mealItem.mealItemAnalysis.sugar;
       }
-    })
-  })
+    });
+  });
 
-  const weeklyAverageCarbohydrate = totalCarbohydrate / mealsWeek.length
-  const weeklyAverageProtein = totalProtein / mealsWeek.length
-  const weeklyAverageFat = totalFat / mealsWeek.length
-  const weeklyAverageSugar = totalSugar / mealsWeek.length
+  const weeklyAverageCarbohydrate = totalCarbohydrate / mealsWeek.length;
+  const weeklyAverageProtein = totalProtein / mealsWeek.length;
+  const weeklyAverageFat = totalFat / mealsWeek.length;
+  const weeklyAverageSugar = totalSugar / mealsWeek.length;
 
   const mealDates = [...new Set(meals.map((meal) => meal.date.getTime()))]
     .sort()
-    .map((date) => new Date(date).toLocaleDateString())
+    .map((date) => new Date(date).toLocaleDateString());
 
   const carboHydrateByDates = meals.map((meal) => {
-    let total = 0
+    let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.carbohydrate
+        total += mealItem.mealItemAnalysis.carbohydrate;
       }
-    })
-    return total
-  })
+    });
+    return total;
+  });
 
   const proteinByDates = meals.map((meal) => {
-    let total = 0
+    let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.protein
+        total += mealItem.mealItemAnalysis.protein;
       }
-    })
-    return total
-  })
+    });
+    return total;
+  });
 
   const fatByDates = meals.map((meal) => {
-    let total = 0
+    let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.fat
+        total += mealItem.mealItemAnalysis.fat;
       }
-    })
-    return total
-  })
+    });
+    return total;
+  });
 
   const sugarByDates = meals.map((meal) => {
-    let total = 0
+    let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.sugar
+        total += mealItem.mealItemAnalysis.sugar;
       }
-    })
-    return total
-  })
+    });
+    return total;
+  });
 
   return (
     <MainLayout>
@@ -359,5 +364,5 @@ export default function DashboardPage({
         </div>
       </div>
     </MainLayout>
-  )
+  );
 }
