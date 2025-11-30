@@ -4,7 +4,6 @@ import prisma from '@/lib/prisma';
 
 export const config = {
   matcher: [
-    '/',
     '/my',
     '/board',
     '/board/:path*',

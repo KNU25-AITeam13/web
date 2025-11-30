@@ -2,16 +2,24 @@ import DashboardPage from './dashboard.page';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
+import { IntroPage } from './intro.page';
 
 export default async function MainPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  // proxy.ts가 인증 및 가입완료를 처리하므로 여기서는 세션과 유저가 항상 존재
+  if (!session?.user) {
+    return <IntroPage />;
+  }
+
   const user = await prisma.user.findUnique({
     where: { id: session!.user.id },
   });
+
+  if (!user || !user.isRegistered) {
+    return <IntroPage />;
+  }
 
   const meals = await prisma.meal.findMany({
     where: { userId: user!.id },
