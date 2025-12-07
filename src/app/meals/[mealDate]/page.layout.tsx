@@ -307,7 +307,7 @@ export default function MealPageLayout({
                             })}
                           </div>
 
-                          <div className="flex justify-end pt-6">
+                          {/* <div className="flex justify-end pt-6">
                             <Button
                               className="text-sm"
                               onClick={() => {
@@ -322,7 +322,7 @@ export default function MealPageLayout({
                             >
                               게시글로 등록하기
                             </Button>
-                          </div>
+                          </div> */}
                         </DisclosurePanel>
                       </>
                     )}
