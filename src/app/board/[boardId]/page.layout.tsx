@@ -49,19 +49,19 @@ export default function BoardDetailPageLayout({
   };
 
   const totalCarboHydrates = meal.mealItems.reduce(
-    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.carbs ?? 0),
+    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.carbsG ?? 0),
     0
   );
   const totalProtein = meal.mealItems.reduce(
-    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.protein ?? 0),
+    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.proteinG ?? 0),
     0
   );
   const totalFat = meal.mealItems.reduce(
-    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.fat ?? 0),
+    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.fatG ?? 0),
     0
   );
   const totalSugar = meal.mealItems.reduce(
-    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.sugars ?? 0),
+    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.sugarsG ?? 0),
     0
   );
 
