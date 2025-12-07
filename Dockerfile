@@ -21,6 +21,10 @@ WORKDIR /app
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy .env file first for prisma generate
+COPY .env .env
+
 COPY . .
 
 # Set environment variables for build
