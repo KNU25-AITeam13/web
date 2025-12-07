@@ -14,10 +14,10 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String  @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean @default(false)
   image         String?
 
   isRegistered Boolean   @default(false)
@@ -28,10 +28,10 @@ model User {
   weight       Int?
   meals        Meal[]
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+  accounts  Account[]
 
   @@unique([email])
   @@map("user")
@@ -102,7 +102,7 @@ model Meal {
 model MealItem {
   mealItemId       String            @id @default(cuid())
   mealId           String
-  meal             Meal              @relation(fields: [mealId], references: [mealId])
+  meal             Meal              @relation(fields: [mealId], references: [mealId], onDelete: Cascade)
   imageName        String
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -114,53 +114,27 @@ model MealItem {
 model MealItemAnalysis {
   mealItemAnalysisId String   @id @default(cuid())
   mealItemId         String   @unique
-  mealItem           MealItem @relation(fields: [mealItemId], references: [mealItemId])
+  mealItem           MealItem @relation(fields: [mealItemId], references: [mealItemId], onDelete: Cascade)
 
-  classId    Int
-  className  String
+  foodName   String
   confidence Float
+  volumeMl   Float?
+  massG      Float?
 
-  amount       Float
-  kcal         Float
-  carbohydrate Float
-  sugar        Float
-  fat          Float
-  protein      Float
-  calcium      Float
-  phosphorus   Float
-  natrium      Float
-  kalium       Float
-  magnesium    Float
-  iron         Float
-  zinc         Float
-  cholesterol  Float
-  transfat     Float
-
-  // totalScore  Float
-  // energyScore Float
-  // eer         Float
-
-  // totalRatioScore        Float
-  // ratioCarbohydrateScore Float
-  // ratioProteinScore      Float
-  // ratioFatScore          Float
-  // ratioTransfatScore     Float
-
-  // totalNutritionScore        Float
-  // nutritionCarbohydrateScore Float
-  // nutritionProteinScore      Float
-  // nutritionCalciumScore      Float
-  // nutritionPhosphorusScore   Float
-  // nutritionMagnesiumScore    Float
-  // nutritionIronScore         Float
-  // nutritionZincScore         Float
-
-  // totalPenalty       Float
-  // phosphorusPenalty  Float
-  // natriumPenalty     Float
-  // ironPenalty        Float
-  // zincPenalty        Float
-  // cholesterolPenalty Float
+  caloriesKcal  Float?
+  proteinG      Float?
+  fatG          Float?
+  carbsG        Float?
+  waterG        Float?
+  sugarsG       Float?
+  dietaryFiberG Float?
+  sodiumMg      Float?
+  cholesterolMg Float?
+  saturatedFatG Float?
+  calciumMg     Float?
+  ironMg        Float?
+  vitaminAUg    Float?
+  vitaminCMg    Float?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -2,7 +2,6 @@
 
 import { logoWhite } from '@/assets';
 import links from '@/constants/links';
-import { IconMail, IconPhone } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 

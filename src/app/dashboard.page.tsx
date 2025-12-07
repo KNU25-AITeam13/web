@@ -73,10 +73,10 @@ export default function DashboardPage({
   mealsWeek.forEach((meal) => {
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        totalCarbohydrate += mealItem.mealItemAnalysis.carbohydrate;
-        totalProtein += mealItem.mealItemAnalysis.protein;
-        totalFat += mealItem.mealItemAnalysis.fat;
-        totalSugar += mealItem.mealItemAnalysis.sugar;
+        totalCarbohydrate += mealItem.mealItemAnalysis.carbsG ?? 0;
+        totalProtein += mealItem.mealItemAnalysis.proteinG ?? 0;
+        totalFat += mealItem.mealItemAnalysis.fatG ?? 0;
+        totalSugar += mealItem.mealItemAnalysis.sugarsG ?? 0;
       }
     });
   });
@@ -94,7 +94,7 @@ export default function DashboardPage({
     let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.carbohydrate;
+        total += mealItem.mealItemAnalysis.carbsG ?? 0;
       }
     });
     return total;
@@ -104,7 +104,7 @@ export default function DashboardPage({
     let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.protein;
+        total += mealItem.mealItemAnalysis.proteinG ?? 0;
       }
     });
     return total;
@@ -114,7 +114,7 @@ export default function DashboardPage({
     let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.fat;
+        total += mealItem.mealItemAnalysis.fatG ?? 0;
       }
     });
     return total;
@@ -124,7 +124,7 @@ export default function DashboardPage({
     let total = 0;
     meal.mealItems.forEach((mealItem) => {
       if (mealItem.mealItemAnalysis) {
-        total += mealItem.mealItemAnalysis.sugar;
+        total += mealItem.mealItemAnalysis.sugarsG ?? 0;
       }
     });
     return total;

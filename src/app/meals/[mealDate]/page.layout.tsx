@@ -12,14 +12,15 @@ import {
   MealItemAnalysis,
   User,
 } from '@/generated/prisma/client';
-import { IconChevronDown } from '@tabler/icons-react';
+import { IconChevronDown, IconTrash } from '@tabler/icons-react';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import Image from 'next/image';
 import 'dayjs/locale/ko';
-import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Button from '@/components/Button';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 dayjs.locale('ko');
 
 interface MealPageLayoutProps {
@@ -37,10 +38,7 @@ export default function MealPageLayout({
   meals,
   imageUrls,
 }: MealPageLayoutProps) {
-  let typeStr = '';
-
-  const [totalScore, setTotalScore] = useState(0);
-  const [scoreLoaded, setScoreLoaded] = useState(false);
+  const router = useRouter();
 
   const handlePublish = (mealId: string) => {
     axios.post('/api/articles', {
@@ -48,61 +46,20 @@ export default function MealPageLayout({
     });
   };
 
-  useEffect(() => {
-    const nutrientData = {
-      kcal: 0,
-      carbohydrate: 0,
-      sugar: 0,
-      fat: 0,
-      protein: 0,
-      calcium: 0,
-      phosphorus: 0,
-      natrium: 0,
-      kalium: 0,
-      magnesium: 0,
-      iron: 0,
-      zinc: 0,
-      cholesterol: 0,
-      transfat: 0,
-    };
-
-    for (let meal of meals) {
-      for (let mealItem of meal.mealItems) {
-        for (let k of Object.keys(nutrientData) as Array<
-          keyof typeof nutrientData
-        >) {
-          nutrientData[k] += mealItem.mealItemAnalysis?.[k] ?? 0;
-        }
-      }
+  const handleDeleteMeal = async (mealId: string) => {
+    if (!confirm('이 식사를 삭제하시겠습니까?')) {
+      return;
     }
 
-    axios
-      .post(`http://mealog.kro.kr:5000/score`, {
-        user_info: {
-          gender: user.gender === 'male' ? 1 : 0,
-          age:
-            new Date().getFullYear() -
-            new Date(user.birthDate!).getFullYear(),
-          height: user.height!,
-          weight: user.weight!,
-          activity: 2,
-        },
-        daily_nutrient: nutrientData,
-      })
-      .then((r) => {
-        setTotalScore(80);
-      });
-  }, []);
-
-  let barColor = '';
-
-  if (totalScore < 50) {
-    barColor = 'bg-red-600';
-  } else if (totalScore < 80) {
-    barColor = 'bg-amber-600';
-  } else {
-    barColor = 'bg-primary-600';
-  }
+    try {
+      await axios.delete(`/api/meals?mealId=${mealId}`);
+      toast.success('식사가 삭제되었습니다.');
+      router.refresh();
+    } catch (error) {
+      toast.error('식사 삭제에 실패했습니다.');
+      console.error(error);
+    }
+  };
 
   return (
     <MainLayout>
@@ -114,28 +71,12 @@ export default function MealPageLayout({
         </div>
 
         <div className="flex gap-8 w-full">
-          <div className="">
-            <div className="text-2xl font-semibold pb-4">이날의 영양 총평</div>
-
-            <div>
-              <div className="w-full bg-gray-200 rounded-xl">
-                <div
-                  className={clsx('h-2 rounded-xl', barColor)}
-                  style={{
-                    width: `${totalScore}%`,
-                  }}
-                />
-              </div>
-              <div className="">
-                총 영양 점수: {Math.round(totalScore * 100) / 100}점
-              </div>
-            </div>
-          </div>
           <div className="grow">
             <div className="text-2xl font-semibold pb-4">이날의 식사들</div>
 
             <div className="flex flex-col items-start gap-2">
               {meals.map((meal) => {
+                let typeStr = '';
                 switch (meal.type) {
                   case 'breakfast':
                     typeStr = '아침';
@@ -151,36 +92,49 @@ export default function MealPageLayout({
                 const { mealItems } = meal;
                 return (
                   <Disclosure
+                    key={meal.mealId}
                     as="div"
                     className="bg-gray-100 w-full rounded-xl"
                   >
                     {({ open }) => (
                       <>
-                        <DisclosureButton className="px-6 py-4 flex justify-between w-full">
-                          <div className="text-left">
-                            <div className="text-xl text-primary-800 font-bold pb-2">
-                              {typeStr}
-                            </div>
-                            <div className="flex gap-4">
-                              <div className="text-sm grow text-black/60">
-                                {mealItems.length}개의 음식
+                        <div className="flex items-stretch">
+                          <DisclosureButton className="px-6 py-4 flex justify-between grow">
+                            <div className="text-left">
+                              <div className="text-xl text-primary-800 font-bold pb-2">
+                                {typeStr}
+                              </div>
+                              <div className="flex gap-4">
+                                <div className="text-sm grow text-black/60">
+                                  {mealItems.length}개의 음식
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div>
-                            <IconChevronDown
-                              className={clsx(
-                                open ? 'rotate-90' : '',
-                                'transition-all duration-200'
-                              )}
-                              size={28}
-                            />
-                          </div>
-                        </DisclosureButton>
+                            <div>
+                              <IconChevronDown
+                                className={clsx(
+                                  open ? 'rotate-90' : '',
+                                  'transition-all duration-200'
+                                )}
+                                size={28}
+                              />
+                            </div>
+                          </DisclosureButton>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteMeal(meal.mealId);
+                            }}
+                            className="px-4 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+                            title="식사 삭제"
+                          >
+                            <IconTrash size={20} />
+                          </button>
+                        </div>
 
                         <DisclosurePanel
                           transition
-                          className="origin-top transition duration-200 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0 pb-6 px-6"
+                          className="origin-top transition duration-200 ease-out data-closed:-translate-y-6 data-closed:opacity-0 pb-6 px-6"
                         >
                           <div className="text-xl text-primary-800 font-semibold px-4 pb-4">
                             식품별 분석 정보
@@ -188,7 +142,7 @@ export default function MealPageLayout({
 
                           <div className="flex flex-col gap-6 px-4">
                             {mealItems.map((mealItem, index) => {
-                              let { mealItemAnalysis } = mealItem;
+                              const { mealItemAnalysis } = mealItem;
 
                               return (
                                 <div
@@ -206,7 +160,7 @@ export default function MealPageLayout({
                                     <div className="w-full">
                                       <div className="flex gap-4 items-center">
                                         <div className="text-xl font-semibold">
-                                          {mealItemAnalysis?.className}
+                                          {mealItemAnalysis?.foodName}
                                         </div>
                                         <div className="text-sm text-gray-500">
                                           정확도{' '}
@@ -223,7 +177,9 @@ export default function MealPageLayout({
                                             칼로리
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.kcal.toFixed(2)}{' '}
+                                            {mealItemAnalysis?.caloriesKcal?.toFixed(
+                                              2
+                                            ) ?? 'N/A'}{' '}
                                             kcal
                                           </div>
                                         </div>
@@ -232,9 +188,9 @@ export default function MealPageLayout({
                                             탄수화물
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.carbohydrate.toFixed(
+                                            {mealItemAnalysis?.carbsG?.toFixed(
                                               2
-                                            )}{' '}
+                                            ) ?? 'N/A'}{' '}
                                             g
                                           </div>
                                         </div>
@@ -243,7 +199,9 @@ export default function MealPageLayout({
                                             당류
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.sugar.toFixed(2)}{' '}
+                                            {mealItemAnalysis?.sugarsG?.toFixed(
+                                              2
+                                            ) ?? 'N/A'}{' '}
                                             g
                                           </div>
                                         </div>
@@ -252,7 +210,10 @@ export default function MealPageLayout({
                                             지방
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.fat.toFixed(2)} g
+                                            {mealItemAnalysis?.fatG?.toFixed(
+                                              2
+                                            ) ?? 'N/A'}{' '}
+                                            g
                                           </div>
                                         </div>
                                         <div className="col-span-1">
@@ -260,9 +221,9 @@ export default function MealPageLayout({
                                             단백질
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.protein.toFixed(
+                                            {mealItemAnalysis?.proteinG?.toFixed(
                                               2
-                                            )}{' '}
+                                            ) ?? 'N/A'}{' '}
                                             g
                                           </div>
                                         </div>
@@ -271,20 +232,9 @@ export default function MealPageLayout({
                                             칼슘
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.calcium.toFixed(
+                                            {mealItemAnalysis?.calciumMg?.toFixed(
                                               2
-                                            )}{' '}
-                                            mg
-                                          </div>
-                                        </div>
-                                        <div className="col-span-1">
-                                          <div className="text-black/60 text-sm">
-                                            인
-                                          </div>
-                                          <div className="font-medium">
-                                            {mealItemAnalysis?.phosphorus.toFixed(
-                                              2
-                                            )}{' '}
+                                            ) ?? 'N/A'}{' '}
                                             mg
                                           </div>
                                         </div>
@@ -293,31 +243,9 @@ export default function MealPageLayout({
                                             나트륨
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.natrium.toFixed(
+                                            {mealItemAnalysis?.sodiumMg?.toFixed(
                                               2
-                                            )}{' '}
-                                            mg
-                                          </div>
-                                        </div>
-                                        <div className="col-span-1">
-                                          <div className="text-black/60 text-sm">
-                                            칼륨
-                                          </div>
-                                          <div className="font-medium">
-                                            {mealItemAnalysis?.kalium.toFixed(
-                                              2
-                                            )}{' '}
-                                            mg
-                                          </div>
-                                        </div>
-                                        <div className="col-span-1">
-                                          <div className="text-black/60 text-sm">
-                                            마그네슘
-                                          </div>
-                                          <div className="font-medium">
-                                            {mealItemAnalysis?.magnesium.toFixed(
-                                              2
-                                            )}{' '}
+                                            ) ?? 'N/A'}{' '}
                                             mg
                                           </div>
                                         </div>
@@ -326,16 +254,9 @@ export default function MealPageLayout({
                                             철분
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.iron.toFixed(2)}{' '}
-                                            mg
-                                          </div>
-                                        </div>
-                                        <div className="col-span-1">
-                                          <div className="text-black/60 text-sm">
-                                            아연
-                                          </div>
-                                          <div className="font-medium">
-                                            {mealItemAnalysis?.zinc.toFixed(2)}{' '}
+                                            {mealItemAnalysis?.ironMg?.toFixed(
+                                              2
+                                            ) ?? 'N/A'}{' '}
                                             mg
                                           </div>
                                         </div>
@@ -344,21 +265,32 @@ export default function MealPageLayout({
                                             콜레스테롤
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.cholesterol.toFixed(
+                                            {mealItemAnalysis?.cholesterolMg?.toFixed(
                                               2
-                                            )}{' '}
+                                            ) ?? 'N/A'}{' '}
                                             mg
                                           </div>
                                         </div>
                                         <div className="col-span-1">
                                           <div className="text-black/60 text-sm">
-                                            트랜스지방
+                                            비타민A
                                           </div>
                                           <div className="font-medium">
-                                            {mealItemAnalysis?.transfat.toFixed(
+                                            {mealItemAnalysis?.vitaminAUg?.toFixed(
                                               2
-                                            )}{' '}
-                                            g
+                                            ) ?? 'N/A'}{' '}
+                                            μg
+                                          </div>
+                                        </div>
+                                        <div className="col-span-1">
+                                          <div className="text-black/60 text-sm">
+                                            비타민C
+                                          </div>
+                                          <div className="font-medium">
+                                            {mealItemAnalysis?.vitaminCMg?.toFixed(
+                                              2
+                                            ) ?? 'N/A'}{' '}
+                                            mg
                                           </div>
                                         </div>
                                       </div>

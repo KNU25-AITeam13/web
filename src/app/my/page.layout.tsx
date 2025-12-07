@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@/components/Button';
 import MainLayout from '@/components/MainLayout';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/react';
 import clsx from 'clsx';

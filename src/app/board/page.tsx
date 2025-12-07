@@ -2,8 +2,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import prisma from '@/lib/prisma';
 import BoardPageLayout from './page.layout';
-import { storage } from '@/lib/firebaseClient';
-import { getDownloadURL, ref } from 'firebase/storage';
+import { getImageUrl } from '@/lib/s3Client';
 
 export default async function BoardPage() {
   const session = await auth.api.getSession({
@@ -32,9 +31,7 @@ export default async function BoardPage() {
   const imageUrls: Record<string, string> = {};
 
   for (const meal of meals) {
-    const mealImageRef = ref(storage, `images/${meal.mealItems[0].imageName}`);
-    const mealImageUrl = await getDownloadURL(mealImageRef);
-    imageUrls[meal.mealId] = mealImageUrl;
+    imageUrls[meal.mealId] = getImageUrl(meal.mealItems[0].imageName);
   }
 
   return <BoardPageLayout meals={meals} imageUrls={imageUrls} />;

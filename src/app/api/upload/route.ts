@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadSchema } from './schema';
-import { ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
-import { storage } from '@/lib/firebaseClient';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import axios from 'axios';
+import { s3Client, BUCKET_NAME } from '@/lib/s3Client';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 
 export async function POST(request: NextRequest) {
   const session = await auth.api.getSession({
@@ -44,15 +43,23 @@ export async function POST(request: NextRequest) {
 
   const fileNames: string[] = [];
 
-  for (let image of images) {
+  for (const image of images) {
     const fileExtension = image.name.split('.').pop();
     const fileName = `${v4()}.${fileExtension}`;
-    const fileRef = ref(storage, `images/${fileName}`);
     fileNames.push(fileName);
 
     console.log(fileName);
 
-    await uploadBytes(fileRef, image);
+    const buffer = Buffer.from(await image.arrayBuffer());
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: `images/${fileName}`,
+        Body: buffer,
+        ContentType: image.type,
+      })
+    );
   }
 
   const meal = await prisma.meal.create({
@@ -63,7 +70,7 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  const items = await prisma.mealItem.createMany({
+  await prisma.mealItem.createMany({
     data: fileNames.map((fileName) => ({
       mealId: meal.mealId,
       imageName: fileName,

@@ -49,7 +49,7 @@ export default function BoardDetailPageLayout({
   };
 
   const totalCarboHydrates = meal.mealItems.reduce(
-    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.carbohydrate ?? 0),
+    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.carbs ?? 0),
     0
   );
   const totalProtein = meal.mealItems.reduce(
@@ -61,7 +61,7 @@ export default function BoardDetailPageLayout({
     0
   );
   const totalSugar = meal.mealItems.reduce(
-    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.sugar ?? 0),
+    (acc, mealItem) => acc + (mealItem.mealItemAnalysis?.sugars ?? 0),
     0
   );
 

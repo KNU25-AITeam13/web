@@ -1,13 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import {
-  appleLogoWhite,
-  googleLogo,
-  kakaoLogo,
-  logo,
-  naverLogoWhite,
-} from '@/assets';
+import { googleLogo, logo } from '@/assets';
 import { signIn } from '@/lib/auth-client';
 
 export default function LoginPageLayout() {

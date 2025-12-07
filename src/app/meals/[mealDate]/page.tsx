@@ -3,15 +3,14 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import MealPageLayout from './page.layout';
-import { storage } from '@/lib/firebaseClient';
-import { ref, getDownloadURL } from 'firebase/storage';
+import { getImageUrl } from '@/lib/s3Client';
 
 export default async function MealPage({
   params,
 }: {
-  params: { mealDate: string };
+  params: Promise<{ mealDate: string }>;
 }) {
-  const { mealDate } = params;
+  const { mealDate } = await params;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -38,16 +37,10 @@ export default async function MealPage({
 
   const imageUrls: Record<string, string[]> = {};
 
-  for (let meal of meals) {
-    const mealImages = await Promise.all(
-      meal.mealItems.map(async (mealItem) => {
-        const imageUrl = await getDownloadURL(
-          ref(storage, `images/${mealItem.imageName}`)
-        );
-
-        return imageUrl;
-      })
-    );
+  for (const meal of meals) {
+    const mealImages = meal.mealItems.map((mealItem) => {
+      return getImageUrl(mealItem.imageName);
+    });
 
     imageUrls[meal.mealId] = mealImages;
   }

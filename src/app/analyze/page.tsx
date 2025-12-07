@@ -7,7 +7,7 @@ import { headers } from 'next/headers';
 export default async function AnalyzePage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -18,7 +18,7 @@ export default async function AnalyzePage({
     where: { id: session!.user.id },
   });
 
-  const { mealId } = searchParams;
+  const { mealId } = await searchParams;
 
   if (!mealId) {
     return <div>mealId가 필요합니다.</div>;

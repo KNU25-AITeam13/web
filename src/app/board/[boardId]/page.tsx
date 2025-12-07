@@ -3,8 +3,7 @@ import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import BoardDetailPageLayout from './page.layout';
 import prisma from '@/lib/prisma';
-import { storage } from '@/lib/firebaseClient';
-import { getDownloadURL, ref } from 'firebase/storage';
+import { getImageUrl } from '@/lib/s3Client';
 
 export default async function BoardDetailPage({
   params,
@@ -47,11 +46,8 @@ export default async function BoardDetailPage({
     return notFound();
   }
 
-  const imageUrls = await Promise.all(
-    meal.mealItems.map((mealItem) => {
-      const mealImageRef = ref(storage, `images/${mealItem.imageName}`);
-      return getDownloadURL(mealImageRef);
-    })
+  const imageUrls = meal.mealItems.map((mealItem) =>
+    getImageUrl(mealItem.imageName)
   );
 
   return (

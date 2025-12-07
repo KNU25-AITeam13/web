@@ -7,7 +7,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import axios from 'axios';
-import { redirect, useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export interface RegisterFormState {
@@ -22,7 +21,6 @@ const MAX_STEP = 2;
 
 export default function RegisterFormLayout() {
   const [step, setStep] = useState(1);
-  const router = useRouter();
 
   const methods = useForm<RegisterFormState>({});
 
@@ -30,7 +28,7 @@ export default function RegisterFormLayout() {
 
   const onSubmit: SubmitHandler<RegisterFormState> = (data) => {
     if (step === MAX_STEP) {
-      axios.post('/api/members', data).then((res) => {
+      axios.post('/api/members', data).then(() => {
         toast.success('성공적으로 회원가입 처리되었습니다!', {
           duration: 3000,
         });

@@ -44,7 +44,13 @@ export default function UploadPage() {
     const files = e.target.files;
 
     if (files) {
-      setValue('images', [...images, ...Array.from(files)]);
+      const newImages = [...images, ...Array.from(files)];
+      if (newImages.length > 6) {
+        toast.error('최대 6개의 이미지만 업로드할 수 있습니다.');
+        setValue('images', newImages.slice(0, 6));
+      } else {
+        setValue('images', newImages);
+      }
     }
   };
 
@@ -76,6 +82,11 @@ export default function UploadPage() {
       const file = e.dataTransfer.files[0];
 
       if (file) {
+        if (images.length >= 6) {
+          toast.error('최대 6개의 이미지만 업로드할 수 있습니다.');
+          return;
+        }
+
         const fileName = file.name;
         const fileNameSplit = fileName.split('.');
         const fileExtension = fileNameSplit[fileNameSplit.length - 1];
@@ -115,7 +126,7 @@ export default function UploadPage() {
         if (res.status === 200) {
           toast.success('사진 업로드를 완료했습니다. 분석을 시작합니다.');
 
-          let meal = res.data.data as Meal;
+          const meal = res.data.data as Meal;
           router.push(`/analyze?mealId=${meal.mealId}`);
         } else {
           toast.error('사진 업로드에 실패했습니다.');
