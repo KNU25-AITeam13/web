@@ -38,7 +38,7 @@ export default function MainNavbar() {
           </Link>
 
           <div className="flex h-full pt-5 gap-6 px-2 text-[15px]">
-            <NavLink href="/board" name="게시판" />
+            {/* <NavLink href="/board" name="게시판" /> */}
             <NavLink href="/upload" name="식사 분석" />
           </div>
         </div>
