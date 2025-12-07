@@ -192,7 +192,7 @@ export default function DashboardPage({
                   : '오늘 음식 사진을 올리지 않았어요'}
               </div>
               <div className="text-sm text-zinc-500">
-                음식 사진을 올리고 영양 분석 및 식단 추천을 받아보세요!
+                음식 사진을 올리고 영양 분석을 받아보세요!
               </div>
             </div>
 

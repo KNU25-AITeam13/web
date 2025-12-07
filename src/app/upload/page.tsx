@@ -148,9 +148,8 @@ export default function UploadPage() {
             </div>
 
             <div className="text-gray-500 font-regular">
-              식사 사진을 업로드하면 AI가 음식을 인식, 영양 정보를 분석하여
-              사용자 맞춤 건강 식단을 추천받을 수 있습니다! 게시판에도 나의
-              식단을 공유해보세요.
+              식사 사진을 업로드하면 AI가 음식의 종류와 양을 인식하고 영양
+              정보를 계산합니다.
             </div>
           </div>
 

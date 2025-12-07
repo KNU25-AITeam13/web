@@ -20,7 +20,7 @@ export default function LoginPageLayout() {
             <div className="w-1/2">
               <Image src={logo} alt="logo" />
               <div className="py-8 text-2xl font-light">
-                모두의 건강한 식사를 위한 영양 분석 및 식단 추천 서비스
+                모두의 건강한 식사를 위한 영양 분석 서비스
               </div>
 
               <div>로그인하여 건강한 식습관 관리를 시작하세요!</div>

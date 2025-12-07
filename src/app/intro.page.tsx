@@ -17,7 +17,7 @@ export function IntroPage() {
             </div>
             <div className="flex gap-6 items-center pb-12">
               <div className="text-5xl font-extrabold text-primary-600">
-                영양 분석 및 식단 추천 서비스
+                영양 분석 서비스
               </div>
               <div>
                 <Image src={logoPrimary} alt="logo" height={80} />
